@@ -1,1 +1,1 @@
-Social Networking Kata
+Giorgio Vespucci's Code Katas
