@@ -23,7 +23,7 @@ import java.io.PrintStream;
 import java.time.Duration;
 import java.time.LocalTime;
 
-public class TextMessage {
+public class TextMessage implements Message {
 
 	private final String text;
 	private final LocalTime submittedOn;
@@ -33,11 +33,12 @@ public class TextMessage {
 		this.submittedOn = submittedOn;
 	}
 
+	@Override
 	public void printTo(PrintStream out, LocalTime referenceTime) {
 
 		final long secondsPassed = Duration.between(this.submittedOn, referenceTime).getSeconds();
 
-		out.println(String.format("%s (%s %s ago)", this.text, elapsedTimeValue(secondsPassed), elapsedTimeUnit(secondsPassed)));
+		out.println(String.format("%s (%s %s ago) ", this.text, elapsedTimeValue(secondsPassed), elapsedTimeUnit(secondsPassed)));
 	}
 
 	private String elapsedTimeValue(final long secondsPassed) {
@@ -50,5 +51,50 @@ public class TextMessage {
 		}
 		return secondsPassed > 60 ? "minutes" : "seconds";
 	}
+
+	@Override
+	public String toString() {
+		return this.text;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (this.submittedOn == null ? 0 : this.submittedOn.hashCode());
+		result = prime * result + (this.text == null ? 0 : this.text.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof TextMessage)) {
+			return false;
+		}
+		final TextMessage other = (TextMessage) obj;
+		if (this.submittedOn == null) {
+			if (other.submittedOn != null) {
+				return false;
+			}
+		} else if (!this.submittedOn.equals(other.submittedOn)) {
+			return false;
+		}
+		if (this.text == null) {
+			if (other.text != null) {
+				return false;
+			}
+		} else if (!this.text.equals(other.text)) {
+			return false;
+		}
+		return true;
+	}
+
+
 
 }
