@@ -38,7 +38,8 @@ public class TextMessage implements Message {
 
 		final long secondsPassed = Duration.between(this.submittedOn, referenceTime).getSeconds();
 
-		out.println(String.format("%s (%s %s ago) ", this.text, elapsedTimeValue(secondsPassed), elapsedTimeUnit(secondsPassed)));
+		final String elapsedTimeValue = elapsedTimeValue(secondsPassed);
+		out.println(String.format("> %s (%s %s ago)", this.text, elapsedTimeValue, elapsedTimeUnit(secondsPassed)));
 	}
 
 	private String elapsedTimeValue(final long secondsPassed) {
@@ -49,7 +50,7 @@ public class TextMessage implements Message {
 		if(secondsPassed == 60) {
 			return "minute";
 		}
-		return secondsPassed > 60 ? "minutes" : "seconds";
+		return secondsPassed > 120 ? "minutes" : "seconds";
 	}
 
 	@Override
@@ -93,6 +94,11 @@ public class TextMessage implements Message {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public LocalTime submissionTime() {
+		return this.submittedOn;
 	}
 
 

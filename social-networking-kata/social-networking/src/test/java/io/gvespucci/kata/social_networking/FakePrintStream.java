@@ -21,6 +21,9 @@ package io.gvespucci.kata.social_networking;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FakePrintStream extends PrintStream {
 
@@ -40,7 +43,13 @@ public class FakePrintStream extends PrintStream {
 		//		.append("\n");
 	}
 
-	public String printed() {
-		return this.printed.toString();
+//	public String printed() {
+//		return this.printed.toString();
+//	}
+
+	public List<String> printedMessages() {
+		final List<String> asList = Arrays.asList(this.printed.toString().split("> "));
+		final List<String> collect = asList.stream().filter(element -> ! element.isEmpty()).collect(Collectors.toList());
+		return collect;
 	}
 }

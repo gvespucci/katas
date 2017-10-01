@@ -49,28 +49,28 @@ public class TextMessageTest {
 	public void shouldPrintTheText() {
 		final TextMessage message = new TextMessage(this.text, LocalTime.now());
 		message.printTo(this.printStream, LocalTime.now());
-		assertThat(this.printStream.printed()).startsWith(this.text);
+		assertThat(this.printStream.printedMessages().stream().findFirst().get()).startsWith(this.text);
 	}
 
 	@Test
 	public void shouldPrintElapsedSecondsAfterTheText() {
 		final TextMessage message = new TextMessage(this.text, this.submittedOn);
 		message.printTo(this.printStream, this.submittedOn.plusSeconds(24));
-		assertThat(this.printStream.printed()).isEqualTo(this.text+" (24 seconds ago) ");
+		assertThat(this.printStream.printedMessages().stream().findFirst().get()).isEqualTo(this.text+" (24 seconds ago)");
 	}
 
 	@Test
 	public void shouldPrintElapsedMinutesAfterTheText() {
 		final TextMessage message = new TextMessage(this.text, this.submittedOn);
 		message.printTo(this.printStream, this.submittedOn.plusMinutes(4).plusSeconds(22));
-		assertThat(this.printStream.printed()).isEqualTo(this.text+" (4 minutes ago) ");
+		assertThat(this.printStream.printedMessages().stream().findFirst().get()).isEqualTo(this.text+" (4 minutes ago)");
 	}
 
 	@Test
 	public void shouldPrintOneSingleMinuteAfterTheText() {
 		final TextMessage message = new TextMessage(this.text, this.submittedOn);
-		message.printTo(this.printStream, this.submittedOn.plusMinutes(1));
-		assertThat(this.printStream.printed()).isEqualTo(this.text+" (1 minute ago) ");
+		message.printTo(this.printStream, this.submittedOn.plusSeconds(60));
+		assertThat(this.printStream.printedMessages().stream().findFirst().get()).isEqualTo(this.text+" (1 minute ago)");
 	}
 
 }

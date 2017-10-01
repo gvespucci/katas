@@ -21,14 +21,18 @@ package io.gvespucci.kata.social_networking;
 
 import java.io.PrintStream;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class SocialNetwork {
 
 	private final PrintStream printStream;
-	final Map<String, LinkedList<Message>> messages = new HashMap<>();
+	private final Map<String, LinkedList<Message>> messages = new HashMap<>();
+	private final List<Following> followings = new ArrayList<>();
 
 	public SocialNetwork(PrintStream printStream) {
 		this.printStream = printStream;
@@ -37,7 +41,6 @@ public class SocialNetwork {
 	public void read(String username, LocalTime reference) {
 		this.messagesFor(username)
 		.stream()
-		.peek(message -> System.out.println(message))
 		.forEach(message -> message.printTo(this.printStream, reference));
 	}
 
@@ -53,6 +56,40 @@ public class SocialNetwork {
 			messages = new LinkedList<>();
 		}
 		return messages;
+	}
+
+	public void follows(String followerName, String followeeName) {
+		this.followings.add(new Following(followerName, followeeName));
+	}
+
+	Boolean isFollowing(String followerName, String followeeName) {
+		return
+				this.followings
+				.stream()
+				.filter(following -> following.equals(new Following(followerName, followeeName)))
+				.findAny().isPresent();
+	}
+
+	public void wallOf(String username, LocalTime referenceTime) {
+		final LinkedList<Message> userMessages = this.messagesFor(username);
+
+		final List<Message> wall = new ArrayList<>();
+
+		userMessages.stream().forEach(message -> wall.add(message));
+
+		this.followings.stream()
+		.filter(following -> following.follower().equals(username))
+		.forEach(following ->
+			wall.addAll(this.messagesFor(following.followee()))
+		);
+
+		wall
+		.stream()
+		.sorted(Comparator.comparing(Message::submissionTime).reversed())
+		.forEach(message -> message.printTo(this.printStream, referenceTime))
+		;
+
+		final Comparator<LocalTime> timeComparator = (arg0, arg1) -> arg0.compareTo(arg1);
 	}
 
 

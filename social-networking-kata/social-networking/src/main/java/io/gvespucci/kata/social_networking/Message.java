@@ -25,5 +25,6 @@ import java.time.LocalTime;
 public interface Message {
 
 	void printTo(PrintStream out, LocalTime referenceTime);
+	LocalTime submissionTime();
 
 }
