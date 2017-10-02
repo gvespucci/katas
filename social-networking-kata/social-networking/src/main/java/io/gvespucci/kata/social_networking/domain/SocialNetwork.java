@@ -17,68 +17,63 @@
  *
  * =============================================================================
  */
-package io.gvespucci.kata.social_networking;
+package io.gvespucci.kata.social_networking.domain;
 
 import java.io.PrintStream;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
+import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
+import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 
 public class SocialNetwork {
 
 	private final PrintStream printStream;
-	private final Map<String, LinkedList<Message>> messages = new HashMap<>();
-	private final List<Following> followings = new ArrayList<>();
+	private final MessageRepository messageRepository;
+	private final FollowingRepository followingsRepository;
 
-	public SocialNetwork(PrintStream printStream) {
+	public SocialNetwork(MessageRepository messages, FollowingRepository followings, PrintStream printStream) {
+		this.messageRepository = messages;
+		this.followingsRepository = followings;
 		this.printStream = printStream;
 	}
 
-	public void read(String username, LocalTime reference) {
+	public void execute(String command) {
+
+	}
+
+	void read(String username, LocalTime referenceTime) {
 		this.messagesFor(username)
 		.stream()
-		.forEach(message -> message.printTo(this.printStream, reference));
+		.forEach(message -> message.printTo(this.printStream, referenceTime));
 	}
 
-	public void post(String username, Message message) {
-		final LinkedList<Message> messages = messagesFor(username);
-		messages.push(message);
-		this.messages.put(username, messages);
+	void post(String username, Message message) {
+		this.messageRepository.add(username, message);
 	}
 
-	LinkedList<Message> messagesFor(String username) {
-		LinkedList<Message> messages = this.messages.get(username);
-		if(messages == null) {
-			messages = new LinkedList<>();
-		}
-		return messages;
+	List<Message> messagesFor(String username) {
+		return this.messageRepository.findBy(username);
 	}
 
-	public void follows(String followerName, String followeeName) {
-		this.followings.add(new Following(followerName, followeeName));
+	void follows(String followerName, String followeeName) {
+		this.followingsRepository.add(new Following(followerName, followeeName));
 	}
 
 	Boolean isFollowing(String followerName, String followeeName) {
-		return
-				this.followings
-				.stream()
-				.filter(following -> following.equals(new Following(followerName, followeeName)))
-				.findAny().isPresent();
+		return this.followingsRepository.exists(new Following(followerName, followeeName));
 	}
 
-	public void wallOf(String username, LocalTime referenceTime) {
-		final LinkedList<Message> userMessages = this.messagesFor(username);
+	void wallOf(String username, LocalTime referenceTime) {
+		final List<Message> userMessages = this.messagesFor(username);
 
 		final List<Message> wall = new ArrayList<>();
 
 		userMessages.stream().forEach(message -> wall.add(message));
 
-		this.followings.stream()
-		.filter(following -> following.follower().equals(username))
+		this.followingsRepository.findBy(username)
 		.forEach(following ->
 			wall.addAll(this.messagesFor(following.followee()))
 		);
@@ -89,9 +84,6 @@ public class SocialNetwork {
 		.forEach(message -> message.printTo(this.printStream, referenceTime))
 		;
 
-		final Comparator<LocalTime> timeComparator = (arg0, arg1) -> arg0.compareTo(arg1);
 	}
-
-
 
 }

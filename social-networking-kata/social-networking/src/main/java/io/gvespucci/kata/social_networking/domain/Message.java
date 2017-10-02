@@ -17,39 +17,14 @@
  *
  * =============================================================================
  */
-package io.gvespucci.kata.social_networking;
+package io.gvespucci.kata.social_networking.domain;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalTime;
 
-public class FakePrintStream extends PrintStream {
+public interface Message {
 
-	private StringBuffer printed = new StringBuffer();
+	void printTo(PrintStream out, LocalTime referenceTime);
+	LocalTime submissionTime();
 
-	public FakePrintStream(OutputStream out) {
-		super(out);
-	}
-
-	public void reset() {
-		this.printed = new StringBuffer();
-	}
-
-	@Override
-	public void println(String string) {
-		this.printed.append(string);
-		//		.append("\n");
-	}
-
-//	public String printed() {
-//		return this.printed.toString();
-//	}
-
-	public List<String> printedMessages() {
-		final List<String> asList = Arrays.asList(this.printed.toString().split("> "));
-		final List<String> collect = asList.stream().filter(element -> ! element.isEmpty()).collect(Collectors.toList());
-		return collect;
-	}
 }

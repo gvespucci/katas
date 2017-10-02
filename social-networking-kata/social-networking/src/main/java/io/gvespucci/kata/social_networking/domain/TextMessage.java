@@ -17,7 +17,7 @@
  *
  * =============================================================================
  */
-package io.gvespucci.kata.social_networking;
+package io.gvespucci.kata.social_networking.domain;
 
 import java.io.PrintStream;
 import java.time.Duration;
