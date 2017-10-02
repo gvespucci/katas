@@ -4,9 +4,28 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
 
-import io.gvespucci.kata.social_networking.domain.Message;
-
+/*
+ * =============================================================================
+ *
+ *   Copyright 2017 Giorgio Vespucci - giorgio.vespucci@gmail.com
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ * =============================================================================
+ */
 public class InMemoryMessageRepository implements MessageRepository {
 
 	private final Map<String, LinkedList<Message>> messages = new HashMap<>();
@@ -17,11 +36,17 @@ public class InMemoryMessageRepository implements MessageRepository {
 	}
 
 	private LinkedList<Message> messagesFor(String username) {
-		LinkedList<Message> messages = this.messages.get(username);
-		if(messages == null) {
-			messages = new LinkedList<>();
-		}
-		return messages;
+		return
+				this.messages
+				.entrySet()
+				.stream()
+				.filter(entriesBy(username))
+				.map(entry -> entry.getValue())
+				.findAny().orElse(new LinkedList<>());
+	}
+
+	private Predicate<? super Entry<String, LinkedList<Message>>> entriesBy(String username) {
+		return entry -> entry.getKey().equals(username);
 	}
 
 	@Override

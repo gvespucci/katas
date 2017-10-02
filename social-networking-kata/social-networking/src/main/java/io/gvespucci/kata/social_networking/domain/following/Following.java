@@ -17,7 +17,7 @@
  *
  * =============================================================================
  */
-package io.gvespucci.kata.social_networking.domain;
+package io.gvespucci.kata.social_networking.domain.following;
 
 public class Following {
 

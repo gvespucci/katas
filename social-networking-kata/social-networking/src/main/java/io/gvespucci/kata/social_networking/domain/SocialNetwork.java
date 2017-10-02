@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import io.gvespucci.kata.social_networking.domain.following.Following;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
+import io.gvespucci.kata.social_networking.domain.message.Message;
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 
 public class SocialNetwork {
@@ -50,7 +52,7 @@ public class SocialNetwork {
 		.forEach(message -> message.printTo(this.printStream, referenceTime));
 	}
 
-	void post(String username, Message message) {
+	public void post(String username, Message message) {
 		this.messageRepository.add(username, message);
 	}
 

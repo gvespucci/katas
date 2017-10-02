@@ -31,7 +31,9 @@ import org.testng.annotations.Test;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 import io.gvespucci.kata.social_networking.domain.following.InMemoryFollowingRepository;
 import io.gvespucci.kata.social_networking.domain.message.InMemoryMessageRepository;
+import io.gvespucci.kata.social_networking.domain.message.Message;
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
+import io.gvespucci.kata.social_networking.domain.message.TextMessage;
 import io.gvespucci.kata.social_networking.util.FakePrintStream;
 
 public class SocialNetworkTest {
