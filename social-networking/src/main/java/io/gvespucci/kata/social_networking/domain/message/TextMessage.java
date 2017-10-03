@@ -103,6 +103,11 @@ public class TextMessage implements Message {
 		return this.submittedOn;
 	}
 
+	@Override
+	public String username() {
+		return this.username;
+	}
+
 
 
 }

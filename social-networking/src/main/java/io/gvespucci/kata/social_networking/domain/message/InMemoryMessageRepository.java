@@ -1,11 +1,8 @@
 package io.gvespucci.kata.social_networking.domain.message;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /*
  * =============================================================================
@@ -28,32 +25,20 @@ import java.util.function.Predicate;
  */
 public class InMemoryMessageRepository implements MessageRepository {
 
-	private final Map<String, LinkedList<Message>> messages = new HashMap<>();
+	private final LinkedList<Message> messages = new LinkedList<>();
 
 	@Override
 	public List<Message> findBy(String username) {
-		return messagesFor(username);
-	}
-
-	private LinkedList<Message> messagesFor(String username) {
 		return
-				this.messages
-				.entrySet()
-				.stream()
-				.filter(entriesBy(username))
-				.map(entry -> entry.getValue())
-				.findAny().orElse(new LinkedList<>());
-	}
-
-	private Predicate<? super Entry<String, LinkedList<Message>>> entriesBy(String username) {
-		return entry -> entry.getKey().equals(username);
+		this.messages
+		.stream()
+		.filter(message -> message.username().equals(username))
+		.collect(Collectors.toList());
 	}
 
 	@Override
-	public void add(String username, Message message) {
-		final LinkedList<Message> messages = messagesFor(username);
+	public void add(Message message) {
 		messages.push(message);
-		this.messages.put(username, messages);
 	}
 
 }

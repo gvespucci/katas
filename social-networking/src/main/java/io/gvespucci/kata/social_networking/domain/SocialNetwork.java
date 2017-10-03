@@ -51,38 +51,22 @@ public class SocialNetwork {
 			final String[] splitCommand = commandText.split(" -> ");
 			final String username = splitCommand[0];
 			final String messageText = splitCommand[1];
-			this.post(username, new TextMessage(username, messageText, submissionTime));
+			new PostCommand(new TextMessage(username, messageText, submissionTime), this.messageRepository).execute();
 		} else
 		if(commandText.contains(" follows ")) {
 			final String[] splitCommand = commandText.split(" follows ");
 			final String followerName = splitCommand[0];
 			final String followeeName = splitCommand[1];
-			this.follows(followerName, followeeName);
+			new FollowCommand(followerName, followeeName, this.followingRepository).execute();
 		} else
 		if(commandText.contains(" wall")) {
 			final String[] splitCommand = commandText.split(" wall");
 			final String username = splitCommand[0];
-			this.wallOf(username, submissionTime);
+			new WallCommand(username, submissionTime, this.messageRepository, this.followingRepository, this.printStream).execute();
 		} else {
-			this.read(commandText, submissionTime);
+			new ReadCommand(commandText, submissionTime, this.messageRepository, this.printStream).execute();
 		};
 
-	}
-
-	private void read(String username, LocalTime referenceTime) {
-		new ReadCommand(username, referenceTime, this.messageRepository, this.printStream).execute();
-	}
-
-	private void post(String username, Message message) {
-		new PostCommand(username, message, this.messageRepository).execute();
-	}
-
-	private void follows(String followerName, String followeeName) {
-		new FollowCommand(followerName, followeeName, this.followingRepository).execute();
-	}
-
-	private void wallOf(String username, LocalTime referenceTime) {
-		new WallCommand(username, referenceTime, this.messageRepository, this.followingRepository, this.printStream).execute();
 	}
 
 	List<Message> messagesFor(String username) {

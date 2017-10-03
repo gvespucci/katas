@@ -23,5 +23,5 @@ import java.util.List;
 
 public interface MessageRepository {
 	List<Message> findBy(String username);
-	void add(String username, Message message);
+	void add(Message message);
 }

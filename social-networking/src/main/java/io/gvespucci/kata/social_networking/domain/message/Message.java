@@ -26,5 +26,6 @@ public interface Message {
 
 	void printTo(PrintStream out, LocalTime referenceTime);
 	LocalTime submissionTime();
+	String username();
 
 }
