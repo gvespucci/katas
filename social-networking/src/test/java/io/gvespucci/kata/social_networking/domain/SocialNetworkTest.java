@@ -94,7 +94,7 @@ public class SocialNetworkTest {
 		final FakePrintStream printStream = new FakePrintStream(System.out);
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
 
-		postMessagesIn(socialNetwork);
+		this.postMessagesIn(socialNetwork);
 
 		socialNetwork.read(BOB, DUMMY_TIME);
 
@@ -126,7 +126,7 @@ public class SocialNetworkTest {
 	public void charliesWall_WhenFollowsAlice_IsMadeOfItsMessagesPlusAliceOnes() throws Exception {
 		final FakePrintStream printStream = new FakePrintStream(System.out);
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
-		postMessagesIn(socialNetwork);
+		this.postMessagesIn(socialNetwork);
 
 		socialNetwork.follows(CHARLIE, ALICE);
 
@@ -143,7 +143,7 @@ public class SocialNetworkTest {
 	public void charliesWall_WhenFollowsAliceAndBob_IsMadeOfItsMessagesPlusAliceAndBobOnes() throws Exception {
 		final FakePrintStream printStream = new FakePrintStream(System.out);
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
-		postMessagesIn(socialNetwork);
+		this.postMessagesIn(socialNetwork);
 
 		socialNetwork.follows(CHARLIE, ALICE);
 		socialNetwork.follows(CHARLIE, BOB);

@@ -21,10 +21,12 @@ package io.gvespucci.kata.social_networking.domain;
 
 import java.io.PrintStream;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
+import io.gvespucci.kata.social_networking.domain.command.FollowCommand;
+import io.gvespucci.kata.social_networking.domain.command.PostCommand;
+import io.gvespucci.kata.social_networking.domain.command.ReadCommand;
+import io.gvespucci.kata.social_networking.domain.command.WallCommand;
 import io.gvespucci.kata.social_networking.domain.following.Following;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 import io.gvespucci.kata.social_networking.domain.message.Message;
@@ -34,11 +36,11 @@ public class SocialNetwork {
 
 	private final PrintStream printStream;
 	private final MessageRepository messageRepository;
-	private final FollowingRepository followingsRepository;
+	private final FollowingRepository followingRepository;
 
-	public SocialNetwork(MessageRepository messages, FollowingRepository followings, PrintStream printStream) {
-		this.messageRepository = messages;
-		this.followingsRepository = followings;
+	public SocialNetwork(MessageRepository messageRepository, FollowingRepository followingRepository, PrintStream printStream) {
+		this.messageRepository = messageRepository;
+		this.followingRepository = followingRepository;
 		this.printStream = printStream;
 	}
 
@@ -47,45 +49,27 @@ public class SocialNetwork {
 	}
 
 	void read(String username, LocalTime referenceTime) {
-		this.messagesFor(username)
-		.stream()
-		.forEach(message -> message.printTo(this.printStream, referenceTime));
+		new ReadCommand(username, referenceTime, this.messageRepository, this.printStream).execute();
 	}
 
-	public void post(String username, Message message) {
-		this.messageRepository.add(username, message);
+	void post(String username, Message message) {
+		new PostCommand(username, message, this.messageRepository).execute();
+	}
+
+	void follows(String followerName, String followeeName) {
+		new FollowCommand(followerName, followeeName, this.followingRepository).execute();
+	}
+
+	void wallOf(String username, LocalTime referenceTime) {
+		new WallCommand(username, referenceTime, this.messageRepository, this.followingRepository, this.printStream).execute();
 	}
 
 	List<Message> messagesFor(String username) {
 		return this.messageRepository.findBy(username);
 	}
 
-	void follows(String followerName, String followeeName) {
-		this.followingsRepository.add(new Following(followerName, followeeName));
-	}
-
 	Boolean isFollowing(String followerName, String followeeName) {
-		return this.followingsRepository.exists(new Following(followerName, followeeName));
-	}
-
-	void wallOf(String username, LocalTime referenceTime) {
-		final List<Message> userMessages = this.messagesFor(username);
-
-		final List<Message> wall = new ArrayList<>();
-
-		userMessages.stream().forEach(message -> wall.add(message));
-
-		this.followingsRepository.findBy(username)
-		.forEach(following ->
-			wall.addAll(this.messagesFor(following.followee()))
-		);
-
-		wall
-		.stream()
-		.sorted(Comparator.comparing(Message::submissionTime).reversed())
-		.forEach(message -> message.printTo(this.printStream, referenceTime))
-		;
-
+		return this.followingRepository.exists(new Following(followerName, followeeName));
 	}
 
 }
