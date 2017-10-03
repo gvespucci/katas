@@ -31,19 +31,13 @@ import org.testng.annotations.Test;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 import io.gvespucci.kata.social_networking.domain.following.InMemoryFollowingRepository;
 import io.gvespucci.kata.social_networking.domain.message.InMemoryMessageRepository;
-import io.gvespucci.kata.social_networking.domain.message.Message;
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
-import io.gvespucci.kata.social_networking.domain.message.TextMessage;
 import io.gvespucci.kata.social_networking.util.FakePrintStream;
 
 public class SocialNetworkTest {
 
-	private static final String CHARLIE = "Charlie";
-	private static final String MIKE = "Mike";
-	private static final String ALICE = "Alice";
-	private static final String BOB = "Bob";
 	private static final LocalTime _1ST_MESSAGE_TIME = LocalTime.of(16, 21, 34);
-	private static final LocalTime DUMMY_TIME = LocalTime.of(15, 00, 00);
+	private static final LocalTime SUBMISSION_TIME = LocalTime.of(15, 00, 00);
 
 	private MessageRepository messageRepository;
 	private FollowingRepository followingRepository;
@@ -57,46 +51,30 @@ public class SocialNetworkTest {
 	@Test
 	public void aUserCanPostOneMessage() {
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, new PrintStream(System.out));
-		socialNetwork.post(ALICE, new TextMessage("I love the weather today", DUMMY_TIME));
-		assertThat(socialNetwork.messagesFor(ALICE).size()).isEqualTo(1);
+
+		socialNetwork.execute("Alice -> I love the weather today", SUBMISSION_TIME);
+
+		assertThat(socialNetwork.messagesFor("Alice").size()).isEqualTo(1);
 	}
 
 	@Test
 	public void aUserCanPostMultipleMessages() {
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, new PrintStream(System.out));
-		socialNetwork.post(BOB, new TextMessage("Damn! We lost!", DUMMY_TIME));
-		socialNetwork.post(BOB, new TextMessage("Good game though.", DUMMY_TIME));
-		assertThat(socialNetwork.messagesFor(BOB).size()).isEqualTo(2);
+
+		socialNetwork.execute("Bob -> Damn! We lost!", SUBMISSION_TIME);
+		socialNetwork.execute("Bob -> Good game though.", SUBMISSION_TIME.plusSeconds(5));
+
+		assertThat(socialNetwork.messagesFor("Bob").size()).isEqualTo(2);
 	}
 
 	@Test
-	public void messagesShouldBeStoredInReverseTimeOrder() {
-		final FakePrintStream printStream = new FakePrintStream(System.out);
-		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
-
-		final TextMessage _1stMessage = new TextMessage("1st Message", LocalTime.of(16, 21, 34));
-		socialNetwork.post(BOB, _1stMessage);
-
-		final TextMessage _2ndMessage = new TextMessage("2nd Message", LocalTime.of(16, 21, 34).plusSeconds(15));
-		socialNetwork.post(BOB, _2ndMessage);
-
-		final TextMessage _3rdMessage = new TextMessage("3rd Message", LocalTime.of(16, 21, 34).plusSeconds(44));
-		socialNetwork.post(BOB, _3rdMessage);
-
-		final List<Message> bobMessages = socialNetwork.messagesFor(BOB);
-		assertThat(bobMessages.get(0)).isEqualTo(_3rdMessage);
-		assertThat(bobMessages.get(1)).isEqualTo(_2ndMessage);
-		assertThat(bobMessages.get(2)).isEqualTo(_1stMessage);
-	}
-
-	@Test
-	public void aUserTimelineContainsAllItsMessages() throws Exception {
+	public void aUserTimelineContainsAllMessagesInReverseTimeOrder() throws Exception {
 		final FakePrintStream printStream = new FakePrintStream(System.out);
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
 
 		this.postMessagesIn(socialNetwork);
 
-		socialNetwork.read(BOB, DUMMY_TIME);
+		socialNetwork.execute("Bob", SUBMISSION_TIME);
 
 		assertThat(printStream.printedMessages().get(0)).startsWith("Bob 3rd Message");
 		assertThat(printStream.printedMessages().get(1)).startsWith("Bob 2nd Message");
@@ -106,20 +84,20 @@ public class SocialNetworkTest {
 	@Test
 	public void aUserTimelineIsEmptyIfNotYetPostedAnything() throws Exception {
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, System.out);
-		socialNetwork.read(MIKE, DUMMY_TIME);
-		assertThat(socialNetwork.messagesFor(MIKE)).isEmpty();
+		socialNetwork.execute("Mike", SUBMISSION_TIME);
+		assertThat(socialNetwork.messagesFor("Mike")).isEmpty();
 	}
 
 	@Test
 	public void aUserCanFollowAnotherUser() throws Exception {
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, System.out);
-		socialNetwork.follows(BOB, ALICE);
-		assertThat(socialNetwork.isFollowing(BOB, ALICE)).isTrue();
+		socialNetwork.follows("Bob", "Alice");
+		assertThat(socialNetwork.isFollowing("Bob", "Alice")).isTrue();
 	}
 
 	@Test
 	public void aUserDoesNotFollowAnotherUserByDefault() throws Exception {
-		assertThat(new SocialNetwork(this.messageRepository, this.followingRepository, System.out).isFollowing(BOB, ALICE)).isFalse();
+		assertThat(new SocialNetwork(this.messageRepository, this.followingRepository, System.out).isFollowing("Bob", "Alice")).isFalse();
 	}
 
 	@Test
@@ -128,9 +106,9 @@ public class SocialNetworkTest {
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
 		this.postMessagesIn(socialNetwork);
 
-		socialNetwork.follows(CHARLIE, ALICE);
+		socialNetwork.follows("Charlie", "Alice");
 
-		socialNetwork.wallOf(CHARLIE, DUMMY_TIME);
+		socialNetwork.wallOf("Charlie", SUBMISSION_TIME);
 
 		final List<String> messages = printStream.printedMessages();
 		assertThat(messages.size()).isEqualTo(3);
@@ -145,10 +123,10 @@ public class SocialNetworkTest {
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
 		this.postMessagesIn(socialNetwork);
 
-		socialNetwork.follows(CHARLIE, ALICE);
-		socialNetwork.follows(CHARLIE, BOB);
+		socialNetwork.follows("Charlie", "Alice");
+		socialNetwork.follows("Charlie", "Bob");
 
-		socialNetwork.wallOf(CHARLIE, DUMMY_TIME);
+		socialNetwork.wallOf("Charlie", SUBMISSION_TIME);
 
 		final List<String> messages = printStream.printedMessages();
 		assertThat(messages.size()).isEqualTo(6);
@@ -162,22 +140,15 @@ public class SocialNetworkTest {
 	}
 
 	private void postMessagesIn(final SocialNetwork socialNetwork) {
-		final TextMessage _1stBobMessage = new TextMessage("Bob 1st Message", _1ST_MESSAGE_TIME);
-		socialNetwork.post(BOB, _1stBobMessage);
+		socialNetwork.execute("Bob -> Bob 1st Message", _1ST_MESSAGE_TIME);
+		socialNetwork.execute("Bob -> Bob 2nd Message", _1ST_MESSAGE_TIME.plusSeconds(15));
 
-		final TextMessage _2ndBobMessage = new TextMessage("Bob 2nd Message", _1ST_MESSAGE_TIME.plusSeconds(15));
-		socialNetwork.post(BOB, _2ndBobMessage);
+		socialNetwork.execute("Alice -> Alice 1st Message", _1ST_MESSAGE_TIME.plusSeconds(30));
+		socialNetwork.execute("Alice -> Alice 2nd Message", _1ST_MESSAGE_TIME.plusSeconds(45));
 
-		final TextMessage _1stAliceMessage = new TextMessage("Alice 1st Message", _1ST_MESSAGE_TIME.plusSeconds(30));
-		socialNetwork.post(ALICE, _1stAliceMessage);
-		final TextMessage _2ndAliceMessage = new TextMessage("Alice 2nd Message", _1ST_MESSAGE_TIME.plusSeconds(45));
-		socialNetwork.post(ALICE, _2ndAliceMessage);
+		socialNetwork.execute("Bob -> Bob 3rd Message", _1ST_MESSAGE_TIME.plusMinutes(1));
 
-		final TextMessage _3rdBobMessage = new TextMessage("Bob 3rd Message", _1ST_MESSAGE_TIME.plusMinutes(1));
-		socialNetwork.post(BOB, _3rdBobMessage);
-
-		final TextMessage _1stCharlieMessage = new TextMessage("Charlie 1st Message", _1ST_MESSAGE_TIME.plusMinutes(2));
-		socialNetwork.post(CHARLIE, _1stCharlieMessage);
+		socialNetwork.execute("Charlie -> Charlie 1st Message", _1ST_MESSAGE_TIME.plusMinutes(2));
 	}
 
 
