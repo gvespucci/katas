@@ -91,7 +91,7 @@ public class SocialNetworkTest {
 	@Test
 	public void aUserCanFollowAnotherUser() throws Exception {
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, System.out);
-		socialNetwork.follows("Bob", "Alice");
+		socialNetwork.execute("Bob follows Alice", SUBMISSION_TIME);
 		assertThat(socialNetwork.isFollowing("Bob", "Alice")).isTrue();
 	}
 
@@ -106,9 +106,9 @@ public class SocialNetworkTest {
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
 		this.postMessagesIn(socialNetwork);
 
-		socialNetwork.follows("Charlie", "Alice");
+		socialNetwork.execute("Charlie follows Alice", SUBMISSION_TIME);
 
-		socialNetwork.wallOf("Charlie", SUBMISSION_TIME);
+		socialNetwork.execute("Charlie wall", SUBMISSION_TIME.plusSeconds(5));
 
 		final List<String> messages = printStream.printedMessages();
 		assertThat(messages.size()).isEqualTo(3);
@@ -123,10 +123,10 @@ public class SocialNetworkTest {
 		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
 		this.postMessagesIn(socialNetwork);
 
-		socialNetwork.follows("Charlie", "Alice");
-		socialNetwork.follows("Charlie", "Bob");
+		socialNetwork.execute("Charlie follows Alice", SUBMISSION_TIME);
+		socialNetwork.execute("Charlie follows Bob", SUBMISSION_TIME.plusSeconds(5));
 
-		socialNetwork.wallOf("Charlie", SUBMISSION_TIME);
+		socialNetwork.execute("Charlie wall", SUBMISSION_TIME.plusSeconds(10));
 
 		final List<String> messages = printStream.printedMessages();
 		assertThat(messages.size()).isEqualTo(6);

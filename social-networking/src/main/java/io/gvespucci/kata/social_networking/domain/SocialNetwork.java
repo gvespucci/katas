@@ -21,7 +21,6 @@ package io.gvespucci.kata.social_networking.domain;
 
 import java.io.PrintStream;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 
 import io.gvespucci.kata.social_networking.domain.command.FollowCommand;
@@ -47,18 +46,26 @@ public class SocialNetwork {
 	}
 
 	public void execute(String commandText, LocalTime submissionTime) {
-		final String[] splitCommand = commandText.split(" -> ");
-		final List<String> commandChunks = Arrays.asList(splitCommand);
 
-		if(commandChunks.size() == 2) {
+		if(commandText.contains(" -> ")) {
+			final String[] splitCommand = commandText.split(" -> ");
 			final String username = splitCommand[0];
 			final String messageText = splitCommand[1];
 			this.post(username, new TextMessage(messageText, submissionTime));
 		} else
-		if(commandChunks.size() == 1) {
+		if(commandText.contains(" follows ")) {
+			final String[] splitCommand = commandText.split(" follows ");
+			final String followerName = splitCommand[0];
+			final String followeeName = splitCommand[1];
+			this.follows(followerName, followeeName);
+		} else
+		if(commandText.contains(" wall")) {
+			final String[] splitCommand = commandText.split(" wall");
 			final String username = splitCommand[0];
-			this.read(username, submissionTime);
-		}
+			this.wallOf(username, submissionTime);
+		} else {
+			this.read(commandText, submissionTime);
+		};
 
 	}
 
