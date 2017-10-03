@@ -51,7 +51,7 @@ public class SocialNetwork {
 			final String[] splitCommand = commandText.split(" -> ");
 			final String username = splitCommand[0];
 			final String messageText = splitCommand[1];
-			this.post(username, new TextMessage(messageText, submissionTime));
+			this.post(username, new TextMessage(username, messageText, submissionTime));
 		} else
 		if(commandText.contains(" follows ")) {
 			final String[] splitCommand = commandText.split(" follows ");
@@ -69,19 +69,19 @@ public class SocialNetwork {
 
 	}
 
-	void read(String username, LocalTime referenceTime) {
+	private void read(String username, LocalTime referenceTime) {
 		new ReadCommand(username, referenceTime, this.messageRepository, this.printStream).execute();
 	}
 
-	void post(String username, Message message) {
+	private void post(String username, Message message) {
 		new PostCommand(username, message, this.messageRepository).execute();
 	}
 
-	void follows(String followerName, String followeeName) {
+	private void follows(String followerName, String followeeName) {
 		new FollowCommand(followerName, followeeName, this.followingRepository).execute();
 	}
 
-	void wallOf(String username, LocalTime referenceTime) {
+	private void wallOf(String username, LocalTime referenceTime) {
 		new WallCommand(username, referenceTime, this.messageRepository, this.followingRepository, this.printStream).execute();
 	}
 

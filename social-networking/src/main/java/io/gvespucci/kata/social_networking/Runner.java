@@ -20,21 +20,30 @@
 package io.gvespucci.kata.social_networking;
 
 import java.io.Console;
+import java.time.LocalTime;
+
+import io.gvespucci.kata.social_networking.domain.SocialNetwork;
+import io.gvespucci.kata.social_networking.domain.following.InMemoryFollowingRepository;
+import io.gvespucci.kata.social_networking.domain.message.InMemoryMessageRepository;
 
 public class Runner {
 
 	public static void main(String[] args) {
 		System.out.println("--- Social Network ---");
+
+		final SocialNetwork socialNetwork = new SocialNetwork(new InMemoryMessageRepository(), new InMemoryFollowingRepository(), System.out);
+
 		final Console console = System.console();
 		if (console == null) {
 			System.out.println("No console: non-interactive mode!");
 			System.exit(0);
 		}
 
-		String command;
+		String commandText;
 
-		while ((command = console.readLine("> ")) != null) {
-			System.out.println("> Command was: " + command);
+		while ((commandText = console.readLine("> ")) != null) {
+//			System.out.println("> Command was: " + command);
+			socialNetwork.execute(commandText, LocalTime.now());
 		}
 		System.exit(0);
 	}

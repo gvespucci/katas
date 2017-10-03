@@ -27,8 +27,10 @@ public class TextMessage implements Message {
 
 	private final String text;
 	private final LocalTime submittedOn;
+	private final String username;
 
-	public TextMessage(String text, LocalTime submittedOn) {
+	public TextMessage(String username, String text, LocalTime submittedOn) {
+		this.username = username;
 		this.text = text;
 		this.submittedOn = submittedOn;
 	}
@@ -38,8 +40,8 @@ public class TextMessage implements Message {
 
 		final long secondsPassed = Duration.between(this.submittedOn, referenceTime).getSeconds();
 
-		final String elapsedTimeValue = elapsedTimeValue(secondsPassed);
-		out.println(String.format("> %s (%s %s ago)", this.text, elapsedTimeValue, elapsedTimeUnit(secondsPassed)));
+		final String elapsedTimeValue = this.elapsedTimeValue(secondsPassed);
+		out.println(String.format("> %s - %s (%s %s ago)", this.username, this.text, elapsedTimeValue, this.elapsedTimeUnit(secondsPassed)));
 	}
 
 	private String elapsedTimeValue(final long secondsPassed) {

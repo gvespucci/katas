@@ -76,9 +76,9 @@ public class SocialNetworkTest {
 
 		socialNetwork.execute("Bob", SUBMISSION_TIME);
 
-		assertThat(printStream.printedMessages().get(0)).startsWith("Bob 3rd Message");
-		assertThat(printStream.printedMessages().get(1)).startsWith("Bob 2nd Message");
-		assertThat(printStream.printedMessages().get(2)).startsWith("Bob 1st Message");
+		assertThat(printStream.printedMessages().get(0)).startsWith("Bob - Bob 3rd Message");
+		assertThat(printStream.printedMessages().get(1)).startsWith("Bob - Bob 2nd Message");
+		assertThat(printStream.printedMessages().get(2)).startsWith("Bob - Bob 1st Message");
 	}
 
 	@Test
@@ -112,9 +112,9 @@ public class SocialNetworkTest {
 
 		final List<String> messages = printStream.printedMessages();
 		assertThat(messages.size()).isEqualTo(3);
-		assertThat(messages.get(0)).startsWith("Charlie 1st Message");
-		assertThat(messages.get(1)).startsWith("Alice 2nd Message");
-		assertThat(messages.get(2)).startsWith("Alice 1st Message");
+		assertThat(messages.get(0)).startsWith("Charlie - Charlie 1st Message");
+		assertThat(messages.get(1)).startsWith("Alice - Alice 2nd Message");
+		assertThat(messages.get(2)).startsWith("Alice - Alice 1st Message");
 	}
 
 	@Test
@@ -130,12 +130,12 @@ public class SocialNetworkTest {
 
 		final List<String> messages = printStream.printedMessages();
 		assertThat(messages.size()).isEqualTo(6);
-		assertThat(messages.get(0)).startsWith("Charlie 1st Message");
-		assertThat(messages.get(1)).startsWith("Bob 3rd Message");
-		assertThat(messages.get(2)).startsWith("Alice 2nd Message");
-		assertThat(messages.get(3)).startsWith("Alice 1st Message");
-		assertThat(messages.get(4)).startsWith("Bob 2nd Message");
-		assertThat(messages.get(5)).startsWith("Bob 1st Message");
+		assertThat(messages.get(0)).startsWith("Charlie - Charlie 1st Message");
+		assertThat(messages.get(1)).startsWith("Bob - Bob 3rd Message");
+		assertThat(messages.get(2)).startsWith("Alice - Alice 2nd Message");
+		assertThat(messages.get(3)).startsWith("Alice - Alice 1st Message");
+		assertThat(messages.get(4)).startsWith("Bob - Bob 2nd Message");
+		assertThat(messages.get(5)).startsWith("Bob - Bob 1st Message");
 
 	}
 
