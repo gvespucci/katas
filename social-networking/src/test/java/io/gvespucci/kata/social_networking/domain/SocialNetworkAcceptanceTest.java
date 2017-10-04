@@ -52,7 +52,7 @@ public class SocialNetworkAcceptanceTest {
 		this.printStream = new FakePrintStream(System.out);
 		this.commandFactory = new CommandFactory(this.messageRepository, this.followingRepository, this.printStream);
 
-		this.socialNetwork = new SocialNetwork(this.commandFactory, this.messageRepository, this.followingRepository, this.printStream);
+		this.socialNetwork = new SocialNetwork(this.commandFactory);
 	}
 
 	@Test
@@ -93,6 +93,7 @@ public class SocialNetworkAcceptanceTest {
 		assertThat(this.printStream.printedMessages()).isEmpty();
 	}
 
+//	TODO: These should be Command tests
 //	@Test
 //	public void aUserCanFollowAnotherUser() throws Exception {
 //		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
@@ -110,7 +111,6 @@ public class SocialNetworkAcceptanceTest {
 		this.postMessagesIn(this.socialNetwork);
 
 		this.socialNetwork.execute("Charlie follows Alice", SUBMISSION_TIME);
-
 		this.socialNetwork.execute("Charlie wall", SUBMISSION_TIME.plusSeconds(5));
 
 		final List<String> messages = this.printStream.printedMessages();
@@ -126,7 +126,6 @@ public class SocialNetworkAcceptanceTest {
 
 		this.socialNetwork.execute("Charlie follows Alice", SUBMISSION_TIME);
 		this.socialNetwork.execute("Charlie follows Bob", SUBMISSION_TIME.plusSeconds(5));
-
 		this.socialNetwork.execute("Charlie wall", SUBMISSION_TIME.plusSeconds(10));
 
 		final List<String> messages = this.printStream.printedMessages();
@@ -151,6 +150,5 @@ public class SocialNetworkAcceptanceTest {
 
 		socialNetwork.execute("Charlie -> Charlie 1st Message", _1ST_MESSAGE_TIME.plusMinutes(2));
 	}
-
 
 }

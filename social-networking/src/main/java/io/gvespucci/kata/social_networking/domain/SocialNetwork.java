@@ -19,23 +19,16 @@
  */
 package io.gvespucci.kata.social_networking.domain;
 
-import java.io.PrintStream;
 import java.time.LocalTime;
 
 import io.gvespucci.kata.social_networking.domain.command.CommandFactory;
-import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
-import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 
 public class SocialNetwork {
 
 	private final CommandFactory commandFactory;
 
-	public SocialNetwork(CommandFactory commandFactory, MessageRepository messageRepository, FollowingRepository followingRepository, PrintStream printStream) {
+	public SocialNetwork(CommandFactory commandFactory) {
 		this.commandFactory = commandFactory;
-	}
-
-	public SocialNetwork(MessageRepository messageRepository, FollowingRepository followingRepository, PrintStream printStream) {
-		this.commandFactory = new CommandFactory(messageRepository, followingRepository, printStream);
 	}
 
 	public void execute(String commandText, LocalTime submissionTime) {

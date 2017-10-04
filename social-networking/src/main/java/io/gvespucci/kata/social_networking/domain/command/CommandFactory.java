@@ -9,6 +9,9 @@ import io.gvespucci.kata.social_networking.domain.message.TextMessage;
 
 public class CommandFactory {
 
+	private static final String WALL_COMMAND_IDENTIFIER = " wall";
+	private static final String FOLLOW_COMMAND_IDENTIFIER = " follows ";
+	private static final String POST_COMMAND_IDENTIFIER = " -> ";
 	private final MessageRepository messageRepository;
 	private final FollowingRepository followingRepository;
 	private final PrintStream printStream;
@@ -20,20 +23,20 @@ public class CommandFactory {
 	}
 
 	public SocialNetworkCommand commandBy(String commandText, LocalTime submissionTime) {
-		if(commandText.contains(" -> ")) {
-			final String[] splitCommand = commandText.split(" -> ");
+		if(commandText.contains(POST_COMMAND_IDENTIFIER)) {
+			final String[] splitCommand = commandText.split(POST_COMMAND_IDENTIFIER);
 			final String username = splitCommand[0];
 			final String messageText = splitCommand[1];
 			return new PostCommand(new TextMessage(username, messageText, submissionTime), this.messageRepository);
 		} else
-		if(commandText.contains(" follows ")) {
-			final String[] splitCommand = commandText.split(" follows ");
+		if(commandText.contains(FOLLOW_COMMAND_IDENTIFIER)) {
+			final String[] splitCommand = commandText.split(FOLLOW_COMMAND_IDENTIFIER);
 			final String followerName = splitCommand[0];
 			final String followeeName = splitCommand[1];
 			return new FollowCommand(followerName, followeeName, this.followingRepository);
 		} else
-		if(commandText.contains(" wall")) {
-			final String[] splitCommand = commandText.split(" wall");
+		if(commandText.contains(WALL_COMMAND_IDENTIFIER)) {
+			final String[] splitCommand = commandText.split(WALL_COMMAND_IDENTIFIER);
 			final String username = splitCommand[0];
 			return new WallCommand(username, submissionTime, this.messageRepository, this.followingRepository, this.printStream);
 		} else {

@@ -34,10 +34,7 @@ public class Runner {
 
 		final SocialNetwork socialNetwork =
 				new SocialNetwork(
-						new CommandFactory(new InMemoryMessageRepository(), new InMemoryFollowingRepository(), System.out),
-						new InMemoryMessageRepository(),
-						new InMemoryFollowingRepository(),
-						System.out);
+						new CommandFactory(new InMemoryMessageRepository(), new InMemoryFollowingRepository(), System.out));
 
 		final Console console = System.console();
 		if (console == null) {
