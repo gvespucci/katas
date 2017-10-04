@@ -27,6 +27,7 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import io.gvespucci.kata.social_networking.domain.command.CommandFactory;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 import io.gvespucci.kata.social_networking.domain.following.InMemoryFollowingRepository;
 import io.gvespucci.kata.social_networking.domain.message.InMemoryMessageRepository;
@@ -41,42 +42,43 @@ public class SocialNetworkAcceptanceTest {
 	private MessageRepository messageRepository;
 	private FollowingRepository followingRepository;
 	private FakePrintStream printStream;
+	private CommandFactory commandFactory;
+	private SocialNetwork socialNetwork;
 
 	@BeforeMethod
 	public void before() {
 		this.messageRepository = new InMemoryMessageRepository();
 		this.followingRepository = new InMemoryFollowingRepository();
 		this.printStream = new FakePrintStream(System.out);
+		this.commandFactory = new CommandFactory(this.messageRepository, this.followingRepository, this.printStream);
+
+		this.socialNetwork = new SocialNetwork(this.commandFactory, this.messageRepository, this.followingRepository, this.printStream);
 	}
 
 	@Test
 	public void aUserPostOneMessage() {
-		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, this.printStream);
-
-		socialNetwork.execute("Alice -> I love the weather today", SUBMISSION_TIME);
-		socialNetwork.execute("Alice", SUBMISSION_TIME.plusSeconds(5));
+		this.socialNetwork.execute("Alice -> I love the weather today", SUBMISSION_TIME);
+		this.socialNetwork.execute("Alice", SUBMISSION_TIME.plusSeconds(5));
 
 		assertThat(this.printStream.printedMessages().size()).isEqualTo(1);
 	}
 
 	@Test
 	public void aUserPostMultipleMessages() {
-		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, this.printStream);
 
-		socialNetwork.execute("Bob -> Damn! We lost!", SUBMISSION_TIME);
-		socialNetwork.execute("Bob -> Good game though.", SUBMISSION_TIME.plusSeconds(5));
-		socialNetwork.execute("Bob", SUBMISSION_TIME.plusSeconds(7));
+		this.socialNetwork.execute("Bob -> Damn! We lost!", SUBMISSION_TIME);
+		this.socialNetwork.execute("Bob -> Good game though.", SUBMISSION_TIME.plusSeconds(5));
+		this.socialNetwork.execute("Bob", SUBMISSION_TIME.plusSeconds(7));
 
 		assertThat(this.printStream.printedMessages().size()).isEqualTo(2);
 	}
 
 	@Test
 	public void aUserTimelineContainsAllMessagesInReverseTimeOrder() throws Exception {
-		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, this.printStream);
 
-		this.postMessagesIn(socialNetwork);
+		this.postMessagesIn(this.socialNetwork);
 
-		socialNetwork.execute("Bob", SUBMISSION_TIME);
+		this.socialNetwork.execute("Bob", SUBMISSION_TIME);
 
 		final List<String> messages = this.printStream.printedMessages();
 		assertThat(messages.size()).isEqualTo(3);
@@ -87,8 +89,7 @@ public class SocialNetworkAcceptanceTest {
 
 	@Test
 	public void aUserTimelineIsEmptyIfNotYetPostedAnything() throws Exception {
-		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, this.printStream);
-		socialNetwork.execute("Mike", SUBMISSION_TIME);
+		this.socialNetwork.execute("Mike", SUBMISSION_TIME);
 		assertThat(this.printStream.printedMessages()).isEmpty();
 	}
 
@@ -106,12 +107,11 @@ public class SocialNetworkAcceptanceTest {
 
 	@Test
 	public void charliesWall_WhenFollowsAlice_IsMadeOfItsMessagesPlusAliceOnes() throws Exception {
-		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, this.printStream);
-		this.postMessagesIn(socialNetwork);
+		this.postMessagesIn(this.socialNetwork);
 
-		socialNetwork.execute("Charlie follows Alice", SUBMISSION_TIME);
+		this.socialNetwork.execute("Charlie follows Alice", SUBMISSION_TIME);
 
-		socialNetwork.execute("Charlie wall", SUBMISSION_TIME.plusSeconds(5));
+		this.socialNetwork.execute("Charlie wall", SUBMISSION_TIME.plusSeconds(5));
 
 		final List<String> messages = this.printStream.printedMessages();
 		assertThat(messages.size()).isEqualTo(3);
@@ -122,13 +122,12 @@ public class SocialNetworkAcceptanceTest {
 
 	@Test
 	public void charliesWall_WhenFollowsAliceAndBob_IsMadeOfItsMessagesPlusAliceAndBobOnes() throws Exception {
-		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, this.printStream);
-		this.postMessagesIn(socialNetwork);
+		this.postMessagesIn(this.socialNetwork);
 
-		socialNetwork.execute("Charlie follows Alice", SUBMISSION_TIME);
-		socialNetwork.execute("Charlie follows Bob", SUBMISSION_TIME.plusSeconds(5));
+		this.socialNetwork.execute("Charlie follows Alice", SUBMISSION_TIME);
+		this.socialNetwork.execute("Charlie follows Bob", SUBMISSION_TIME.plusSeconds(5));
 
-		socialNetwork.execute("Charlie wall", SUBMISSION_TIME.plusSeconds(10));
+		this.socialNetwork.execute("Charlie wall", SUBMISSION_TIME.plusSeconds(10));
 
 		final List<String> messages = this.printStream.printedMessages();
 		assertThat(messages.size()).isEqualTo(6);
