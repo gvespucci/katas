@@ -16,10 +16,15 @@ class ReadCommand extends SocialNetworkCommand {
 	}
 
 	@Override
-	public void execute(String textCommand, LocalTime submissionTime) {
+	void innerExecute(String textCommand, LocalTime submissionTime) {
 		this.messageRepository.findBy(textCommand)
 		.stream()
 		.forEach(message -> message.printTo(this.printStream, submissionTime));
+	}
+
+	@Override
+	boolean canHandle(String textCommand) {
+		return true;
 	}
 
 }

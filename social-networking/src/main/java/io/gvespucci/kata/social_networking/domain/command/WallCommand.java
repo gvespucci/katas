@@ -29,31 +29,31 @@ class WallCommand extends SocialNetworkCommand {
 	}
 
 	@Override
-	void execute(String textCommand, LocalTime submissionTime) {
-		if(textCommand.contains(WALL_COMMAND_IDENTIFIER)) {
-			final String[] splitCommand = textCommand.split(WALL_COMMAND_IDENTIFIER);
-			final String username = splitCommand[0];
+	boolean canHandle(String textCommand) {
+		return textCommand.contains(WALL_COMMAND_IDENTIFIER);
+	}
 
-			final List<Message> userMessages = this.messageRepository.findBy(username);
+	@Override
+	void innerExecute(String textCommand, LocalTime submissionTime) {
+		final String[] splitCommand = textCommand.split(WALL_COMMAND_IDENTIFIER);
+		final String username = splitCommand[0];
 
-			final List<Message> wall = new ArrayList<>();
+		final List<Message> userMessages = this.messageRepository.findBy(username);
 
-			userMessages.stream().forEach(message -> wall.add(message));
+		final List<Message> wall = new ArrayList<>();
 
-			this.followingRepository.findBy(username)
-			.forEach(following ->
-				wall.addAll(this.messageRepository.findBy(following.followee()))
-			);
+		userMessages.stream().forEach(message -> wall.add(message));
 
-			wall
-			.stream()
-			.sorted(Comparator.comparing(Message::submissionTime).reversed())
-			.forEach(message -> message.printTo(this.printStream, submissionTime))
-			;
+		this.followingRepository.findBy(username)
+		.forEach(following ->
+			wall.addAll(this.messageRepository.findBy(following.followee()))
+		);
 
-		} else {
-			this.nextCommand.execute(textCommand, submissionTime);
-		}
+		wall
+		.stream()
+		.sorted(Comparator.comparing(Message::submissionTime).reversed())
+		.forEach(message -> message.printTo(this.printStream, submissionTime))
+		;
 	}
 
 }

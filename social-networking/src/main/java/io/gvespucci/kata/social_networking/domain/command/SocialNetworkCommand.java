@@ -10,11 +10,24 @@ abstract class SocialNetworkCommand {
 		this.nextCommand = command;
 	}
 
-	abstract void execute(String textCommand, LocalTime submissionTime);
+	void execute(String textCommand, LocalTime submissionTime) {
+		if(canHandle(textCommand)) {
+			innerExecute(textCommand, submissionTime);
+		} else {
+			this.nextCommand.execute(textCommand, submissionTime);
+		}
+	};
+
+	abstract boolean canHandle(String textCommand);
+	abstract void innerExecute(String textCommand, LocalTime submissionTime);
 
 	static SocialNetworkCommand NULL = new SocialNetworkCommand() {
+
 		@Override
-		void execute(String textCommand, LocalTime submissionTime) {}
+		boolean canHandle(String textCommand) { return true; }
+
+		@Override
+		void innerExecute(String textCommand, LocalTime submissionTime) {}
 	};
 
 }

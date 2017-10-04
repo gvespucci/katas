@@ -16,15 +16,16 @@ class FollowCommand extends SocialNetworkCommand {
 	}
 
 	@Override
-	void execute(String textCommand, LocalTime submissionTime) {
-		if(textCommand.contains(FOLLOW_COMMAND_IDENTIFIER)) {
-			final String[] splitCommand = textCommand.split(FOLLOW_COMMAND_IDENTIFIER);
-			final String followerName = splitCommand[0];
-			final String followeeName = splitCommand[1];
-			this.followingRepository.add(new Following(followerName, followeeName));
-		} else {
-			this.nextCommand.execute(textCommand, submissionTime);
-		}
+	void innerExecute(String textCommand, LocalTime submissionTime) {
+		final String[] splitCommand = textCommand.split(FOLLOW_COMMAND_IDENTIFIER);
+		final String followerName = splitCommand[0];
+		final String followeeName = splitCommand[1];
+		this.followingRepository.add(new Following(followerName, followeeName));
+	}
+
+	@Override
+	boolean canHandle(String textCommand) {
+		return textCommand.contains(FOLLOW_COMMAND_IDENTIFIER);
 	}
 
 }

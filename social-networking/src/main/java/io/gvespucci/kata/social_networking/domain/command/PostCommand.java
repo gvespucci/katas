@@ -16,15 +16,16 @@ class PostCommand extends SocialNetworkCommand {
 	}
 
 	@Override
-	public void execute(String textCommand, LocalTime submissionTime) {
-		if (textCommand.contains(POST_COMMAND_IDENTIFIER)) {
-			final String[] splitCommand = textCommand.split(POST_COMMAND_IDENTIFIER);
-			final String username = splitCommand[0];
-			final String messageText = splitCommand[1];
-			this.messageRepository.add(new TextMessage(username, messageText, submissionTime));
-		} else {
-			this.nextCommand.execute(textCommand, submissionTime);
-		}
+	void innerExecute(String textCommand, LocalTime submissionTime) {
+		final String[] splitCommand = textCommand.split(POST_COMMAND_IDENTIFIER);
+		final String username = splitCommand[0];
+		final String messageText = splitCommand[1];
+		this.messageRepository.add(new TextMessage(username, messageText, submissionTime));
+	}
+
+	@Override
+	boolean canHandle(String textCommand) {
+		return textCommand.contains(POST_COMMAND_IDENTIFIER);
 	}
 
 }
