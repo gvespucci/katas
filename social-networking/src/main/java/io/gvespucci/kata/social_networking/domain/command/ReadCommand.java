@@ -5,12 +5,12 @@ import java.time.LocalTime;
 
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 
-public class ReadCommand implements SocialNetworkCommand {
+class ReadCommand implements SocialNetworkCommand {
 
-	private MessageRepository messageRepository;
-	private String username;
-	private LocalTime referenceTime;
-	private PrintStream printStream;
+	private final MessageRepository messageRepository;
+	private final String username;
+	private final LocalTime referenceTime;
+	private final PrintStream printStream;
 
 	public ReadCommand(String username, LocalTime referenceTime, MessageRepository messageRepository, PrintStream printStream) {
 		this.username = username;
@@ -21,9 +21,9 @@ public class ReadCommand implements SocialNetworkCommand {
 
 	@Override
 	public void execute() {
-		this.messageRepository.findBy(username)
+		this.messageRepository.findBy(this.username)
 		.stream()
-		.forEach(message -> message.printTo(this.printStream, referenceTime));
+		.forEach(message -> message.printTo(this.printStream, this.referenceTime));
 	}
 
 }

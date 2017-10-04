@@ -23,6 +23,7 @@ import java.io.Console;
 import java.time.LocalTime;
 
 import io.gvespucci.kata.social_networking.domain.SocialNetwork;
+import io.gvespucci.kata.social_networking.domain.command.CommandFactory;
 import io.gvespucci.kata.social_networking.domain.following.InMemoryFollowingRepository;
 import io.gvespucci.kata.social_networking.domain.message.InMemoryMessageRepository;
 
@@ -31,7 +32,12 @@ public class Runner {
 	public static void main(String[] args) {
 		System.out.println("--- Social Network ---");
 
-		final SocialNetwork socialNetwork = new SocialNetwork(new InMemoryMessageRepository(), new InMemoryFollowingRepository(), System.out);
+		final SocialNetwork socialNetwork =
+				new SocialNetwork(
+						new CommandFactory(new InMemoryMessageRepository(), new InMemoryFollowingRepository(), System.out),
+						new InMemoryMessageRepository(),
+						new InMemoryFollowingRepository(),
+						System.out);
 
 		final Console console = System.console();
 		if (console == null) {
@@ -42,7 +48,6 @@ public class Runner {
 		String commandText;
 
 		while ((commandText = console.readLine("> ")) != null) {
-//			System.out.println("> Command was: " + command);
 			socialNetwork.execute(commandText, LocalTime.now());
 		}
 		System.exit(0);

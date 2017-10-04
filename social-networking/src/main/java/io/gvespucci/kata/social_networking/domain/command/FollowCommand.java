@@ -3,11 +3,11 @@ package io.gvespucci.kata.social_networking.domain.command;
 import io.gvespucci.kata.social_networking.domain.following.Following;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 
-public class FollowCommand implements SocialNetworkCommand {
+class FollowCommand implements SocialNetworkCommand {
 
-	private String followerName;
-	private String followeeName;
-	private FollowingRepository followingsRepository;
+	private final String followerName;
+	private final String followeeName;
+	private final FollowingRepository followingsRepository;
 
 	public FollowCommand(String followerName, String followeeName, FollowingRepository followingsRepository) {
 		this.followerName = followerName;
@@ -17,7 +17,7 @@ public class FollowCommand implements SocialNetworkCommand {
 
 	@Override
 	public void execute() {
-		this.followingsRepository.add(new Following(followerName, followeeName));
+		this.followingsRepository.add(new Following(this.followerName, this.followeeName));
 	}
 
 }

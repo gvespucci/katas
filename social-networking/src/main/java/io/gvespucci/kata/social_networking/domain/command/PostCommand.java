@@ -3,7 +3,7 @@ package io.gvespucci.kata.social_networking.domain.command;
 import io.gvespucci.kata.social_networking.domain.message.Message;
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 
-public class PostCommand implements SocialNetworkCommand {
+class PostCommand implements SocialNetworkCommand {
 
 	private final Message message;
 	private final MessageRepository messageRepository;
@@ -15,7 +15,7 @@ public class PostCommand implements SocialNetworkCommand {
 
 	@Override
 	public void execute() {
-		this.messageRepository.add(message);
+		this.messageRepository.add(this.message);
 	}
 
 }

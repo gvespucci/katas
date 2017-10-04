@@ -21,60 +21,27 @@ package io.gvespucci.kata.social_networking.domain;
 
 import java.io.PrintStream;
 import java.time.LocalTime;
-import java.util.List;
 
-import io.gvespucci.kata.social_networking.domain.command.FollowCommand;
-import io.gvespucci.kata.social_networking.domain.command.PostCommand;
-import io.gvespucci.kata.social_networking.domain.command.ReadCommand;
-import io.gvespucci.kata.social_networking.domain.command.WallCommand;
-import io.gvespucci.kata.social_networking.domain.following.Following;
+import io.gvespucci.kata.social_networking.domain.command.CommandFactory;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
-import io.gvespucci.kata.social_networking.domain.message.Message;
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
-import io.gvespucci.kata.social_networking.domain.message.TextMessage;
 
 public class SocialNetwork {
 
-	private final PrintStream printStream;
-	private final MessageRepository messageRepository;
-	private final FollowingRepository followingRepository;
+	private final CommandFactory commandFactory;
+
+	public SocialNetwork(CommandFactory commandFactory, MessageRepository messageRepository, FollowingRepository followingRepository, PrintStream printStream) {
+		this.commandFactory = commandFactory;
+	}
 
 	public SocialNetwork(MessageRepository messageRepository, FollowingRepository followingRepository, PrintStream printStream) {
-		this.messageRepository = messageRepository;
-		this.followingRepository = followingRepository;
-		this.printStream = printStream;
+		this.commandFactory = new CommandFactory(messageRepository, followingRepository, printStream);
 	}
 
 	public void execute(String commandText, LocalTime submissionTime) {
 
-		if(commandText.contains(" -> ")) {
-			final String[] splitCommand = commandText.split(" -> ");
-			final String username = splitCommand[0];
-			final String messageText = splitCommand[1];
-			new PostCommand(new TextMessage(username, messageText, submissionTime), this.messageRepository).execute();
-		} else
-		if(commandText.contains(" follows ")) {
-			final String[] splitCommand = commandText.split(" follows ");
-			final String followerName = splitCommand[0];
-			final String followeeName = splitCommand[1];
-			new FollowCommand(followerName, followeeName, this.followingRepository).execute();
-		} else
-		if(commandText.contains(" wall")) {
-			final String[] splitCommand = commandText.split(" wall");
-			final String username = splitCommand[0];
-			new WallCommand(username, submissionTime, this.messageRepository, this.followingRepository, this.printStream).execute();
-		} else {
-			new ReadCommand(commandText, submissionTime, this.messageRepository, this.printStream).execute();
-		};
+		this.commandFactory.commandBy(commandText, submissionTime).execute();
 
-	}
-
-	List<Message> messagesFor(String username) {
-		return this.messageRepository.findBy(username);
-	}
-
-	Boolean isFollowing(String followerName, String followeeName) {
-		return this.followingRepository.exists(new Following(followerName, followeeName));
 	}
 
 }
