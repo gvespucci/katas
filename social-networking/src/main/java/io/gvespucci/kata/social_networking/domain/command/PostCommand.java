@@ -1,21 +1,30 @@
 package io.gvespucci.kata.social_networking.domain.command;
 
-import io.gvespucci.kata.social_networking.domain.message.Message;
+import java.time.LocalTime;
+
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
+import io.gvespucci.kata.social_networking.domain.message.TextMessage;
 
-class PostCommand implements SocialNetworkCommand {
+class PostCommand extends SocialNetworkCommand {
 
-	private final Message message;
+	private static final String POST_COMMAND_IDENTIFIER = " -> ";
+
 	private final MessageRepository messageRepository;
 
-	public PostCommand(Message message, MessageRepository messageRepository) {
-		this.message = message;
+	PostCommand(MessageRepository messageRepository) {
 		this.messageRepository = messageRepository;
 	}
 
 	@Override
-	public void execute() {
-		this.messageRepository.add(this.message);
+	public void execute(String textCommand, LocalTime submissionTime) {
+		if (textCommand.contains(POST_COMMAND_IDENTIFIER)) {
+			final String[] splitCommand = textCommand.split(POST_COMMAND_IDENTIFIER);
+			final String username = splitCommand[0];
+			final String messageText = splitCommand[1];
+			this.messageRepository.add(new TextMessage(username, messageText, submissionTime));
+		} else {
+			this.nextCommand.execute(textCommand, submissionTime);
+		}
 	}
 
 }

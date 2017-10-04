@@ -1,23 +1,30 @@
 package io.gvespucci.kata.social_networking.domain.command;
 
+import java.time.LocalTime;
+
 import io.gvespucci.kata.social_networking.domain.following.Following;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 
-class FollowCommand implements SocialNetworkCommand {
+class FollowCommand extends SocialNetworkCommand {
 
-	private final String followerName;
-	private final String followeeName;
-	private final FollowingRepository followingsRepository;
+	private static final String FOLLOW_COMMAND_IDENTIFIER = " follows ";
 
-	public FollowCommand(String followerName, String followeeName, FollowingRepository followingsRepository) {
-		this.followerName = followerName;
-		this.followeeName = followeeName;
-		this.followingsRepository = followingsRepository;
+	private final FollowingRepository followingRepository;
+
+	FollowCommand(FollowingRepository followingRepository) {
+		this.followingRepository = followingRepository;
 	}
 
 	@Override
-	public void execute() {
-		this.followingsRepository.add(new Following(this.followerName, this.followeeName));
+	void execute(String textCommand, LocalTime submissionTime) {
+		if(textCommand.contains(FOLLOW_COMMAND_IDENTIFIER)) {
+			final String[] splitCommand = textCommand.split(FOLLOW_COMMAND_IDENTIFIER);
+			final String followerName = splitCommand[0];
+			final String followeeName = splitCommand[1];
+			this.followingRepository.add(new Following(followerName, followeeName));
+		} else {
+			this.nextCommand.execute(textCommand, submissionTime);
+		}
 	}
 
 }

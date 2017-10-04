@@ -23,7 +23,7 @@ import java.io.Console;
 import java.time.LocalTime;
 
 import io.gvespucci.kata.social_networking.domain.SocialNetwork;
-import io.gvespucci.kata.social_networking.domain.command.CommandFactory;
+import io.gvespucci.kata.social_networking.domain.command.CommandDispatcher;
 import io.gvespucci.kata.social_networking.domain.following.InMemoryFollowingRepository;
 import io.gvespucci.kata.social_networking.domain.message.InMemoryMessageRepository;
 
@@ -34,7 +34,12 @@ public class Runner {
 
 		final SocialNetwork socialNetwork =
 				new SocialNetwork(
-						new CommandFactory(new InMemoryMessageRepository(), new InMemoryFollowingRepository(), System.out));
+						new CommandDispatcher(
+								new InMemoryMessageRepository(),
+								new InMemoryFollowingRepository(),
+								System.out
+								)
+						);
 
 		final Console console = System.console();
 		if (console == null) {

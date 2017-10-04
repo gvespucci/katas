@@ -27,7 +27,7 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import io.gvespucci.kata.social_networking.domain.command.CommandFactory;
+import io.gvespucci.kata.social_networking.domain.command.CommandDispatcher;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 import io.gvespucci.kata.social_networking.domain.following.InMemoryFollowingRepository;
 import io.gvespucci.kata.social_networking.domain.message.InMemoryMessageRepository;
@@ -42,7 +42,7 @@ public class SocialNetworkAcceptanceTest {
 	private MessageRepository messageRepository;
 	private FollowingRepository followingRepository;
 	private FakePrintStream printStream;
-	private CommandFactory commandFactory;
+	private CommandDispatcher commandFactory;
 	private SocialNetwork socialNetwork;
 
 	@BeforeMethod
@@ -50,7 +50,7 @@ public class SocialNetworkAcceptanceTest {
 		this.messageRepository = new InMemoryMessageRepository();
 		this.followingRepository = new InMemoryFollowingRepository();
 		this.printStream = new FakePrintStream(System.out);
-		this.commandFactory = new CommandFactory(this.messageRepository, this.followingRepository, this.printStream);
+		this.commandFactory = new CommandDispatcher(this.messageRepository, this.followingRepository, this.printStream);
 
 		this.socialNetwork = new SocialNetwork(this.commandFactory);
 	}

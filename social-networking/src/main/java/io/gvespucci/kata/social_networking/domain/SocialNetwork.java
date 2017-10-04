@@ -21,19 +21,19 @@ package io.gvespucci.kata.social_networking.domain;
 
 import java.time.LocalTime;
 
-import io.gvespucci.kata.social_networking.domain.command.CommandFactory;
+import io.gvespucci.kata.social_networking.domain.command.CommandDispatcher;
 
 public class SocialNetwork {
 
-	private final CommandFactory commandFactory;
+	private final CommandDispatcher commandDispatcher;
 
-	public SocialNetwork(CommandFactory commandFactory) {
-		this.commandFactory = commandFactory;
+	public SocialNetwork(CommandDispatcher commandDispatcher) {
+		this.commandDispatcher = commandDispatcher;
 	}
 
 	public void execute(String commandText, LocalTime submissionTime) {
 
-		this.commandFactory.commandBy(commandText, submissionTime).execute();
+		this.commandDispatcher.execute(commandText, submissionTime);
 
 	}
 

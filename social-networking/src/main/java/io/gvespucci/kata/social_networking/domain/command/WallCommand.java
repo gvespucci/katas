@@ -10,40 +10,50 @@ import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 import io.gvespucci.kata.social_networking.domain.message.Message;
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 
-class WallCommand implements SocialNetworkCommand {
+class WallCommand extends SocialNetworkCommand {
 
-	private final String username;
+	private static final String WALL_COMMAND_IDENTIFIER = " wall";
+
 	private final MessageRepository messageRepository;
 	private final PrintStream printStream;
-	private final FollowingRepository followingsRepository;
-	private final LocalTime referenceTime;
+	private final FollowingRepository followingRepository;
 
-	public WallCommand(String username, LocalTime referenceTime, MessageRepository messageRepository, FollowingRepository followingsRepository, PrintStream printStream) {
-		this.username = username;
-		this.referenceTime = referenceTime;
+	WallCommand(
+			MessageRepository messageRepository,
+			FollowingRepository followingRepository,
+			PrintStream printStream)
+	{
 		this.messageRepository = messageRepository;
-		this.followingsRepository = followingsRepository;
+		this.followingRepository = followingRepository;
 		this.printStream = printStream;
 	}
 
 	@Override
-	public void execute() {
-		final List<Message> userMessages = this.messageRepository.findBy(this.username);
+	void execute(String textCommand, LocalTime submissionTime) {
+		if(textCommand.contains(WALL_COMMAND_IDENTIFIER)) {
+			final String[] splitCommand = textCommand.split(WALL_COMMAND_IDENTIFIER);
+			final String username = splitCommand[0];
 
-		final List<Message> wall = new ArrayList<>();
+			final List<Message> userMessages = this.messageRepository.findBy(username);
 
-		userMessages.stream().forEach(message -> wall.add(message));
+			final List<Message> wall = new ArrayList<>();
 
-		this.followingsRepository.findBy(this.username)
-		.forEach(following ->
-			wall.addAll(this.messageRepository.findBy(following.followee()))
-		);
+			userMessages.stream().forEach(message -> wall.add(message));
 
-		wall
-		.stream()
-		.sorted(Comparator.comparing(Message::submissionTime).reversed())
-		.forEach(message -> message.printTo(this.printStream, this.referenceTime))
-		;
+			this.followingRepository.findBy(username)
+			.forEach(following ->
+				wall.addAll(this.messageRepository.findBy(following.followee()))
+			);
+
+			wall
+			.stream()
+			.sorted(Comparator.comparing(Message::submissionTime).reversed())
+			.forEach(message -> message.printTo(this.printStream, submissionTime))
+			;
+
+		} else {
+			this.nextCommand.execute(textCommand, submissionTime);
+		}
 	}
 
 }
