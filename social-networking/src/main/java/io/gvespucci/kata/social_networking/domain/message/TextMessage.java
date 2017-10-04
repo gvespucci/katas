@@ -52,7 +52,7 @@ public class TextMessage implements Message {
 		if(secondsPassed == 60) {
 			return "minute";
 		}
-		return secondsPassed > 120 ? "minutes" : "seconds";
+		return secondsPassed > 60 ? "minutes" : "seconds";
 	}
 
 	@Override
