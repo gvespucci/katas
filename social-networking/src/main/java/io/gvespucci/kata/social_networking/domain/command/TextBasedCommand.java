@@ -41,7 +41,6 @@ abstract class TextBasedCommand {
 	abstract void handle(String textCommand, LocalTime submissionTime);
 
 	static TextBasedCommand NULL = new TextBasedCommand() {
-
 		@Override
 		boolean canHandle(String textCommand) { return true; }
 

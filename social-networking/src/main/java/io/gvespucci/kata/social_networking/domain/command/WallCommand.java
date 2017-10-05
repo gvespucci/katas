@@ -57,13 +57,16 @@ class WallCommand extends TextBasedCommand {
 		final String[] splitCommand = textCommand.split(WALL_COMMAND_IDENTIFIER);
 		final String username = splitCommand[0];
 
-		final List<Message> userMessages = this.messageRepository.findBy(username);
-
 		final List<Message> wall = new ArrayList<>();
 
-		userMessages.stream().forEach(message -> wall.add(message));
+		this.messageRepository
+		.findBy(username)
+		.stream()
+		.forEach(message -> wall.add(message));
 
-		this.followingRepository.findBy(username)
+		this.followingRepository
+		.findBy(username)
+		.stream()
 		.forEach(following ->
 			wall.addAll(this.messageRepository.findBy(following.followee()))
 		);
