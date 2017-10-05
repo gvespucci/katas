@@ -21,32 +21,32 @@ package io.gvespucci.kata.social_networking.domain.command;
 
 import java.time.LocalTime;
 
-abstract class SocialNetworkCommand {
+abstract class TextBasedCommand {
 
-	protected SocialNetworkCommand nextCommand;
+	protected TextBasedCommand nextCommand;
 
-	void addNext(SocialNetworkCommand command) {
+	void addNext(TextBasedCommand command) {
 		this.nextCommand = command;
 	}
 
 	void execute(String textCommand, LocalTime submissionTime) {
 		if(canHandle(textCommand)) {
-			innerExecute(textCommand, submissionTime);
+			handle(textCommand, submissionTime);
 		} else {
 			this.nextCommand.execute(textCommand, submissionTime);
 		}
 	};
 
 	abstract boolean canHandle(String textCommand);
-	abstract void innerExecute(String textCommand, LocalTime submissionTime);
+	abstract void handle(String textCommand, LocalTime submissionTime);
 
-	static SocialNetworkCommand NULL = new SocialNetworkCommand() {
+	static TextBasedCommand NULL = new TextBasedCommand() {
 
 		@Override
 		boolean canHandle(String textCommand) { return true; }
 
 		@Override
-		void innerExecute(String textCommand, LocalTime submissionTime) {}
+		void handle(String textCommand, LocalTime submissionTime) {}
 	};
 
 }

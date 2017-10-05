@@ -93,19 +93,6 @@ public class SocialNetworkAcceptanceTest {
 		assertThat(this.printStream.printedMessages()).isEmpty();
 	}
 
-//	TODO: These should be Command tests
-//	@Test
-//	public void aUserCanFollowAnotherUser() throws Exception {
-//		final SocialNetwork socialNetwork = new SocialNetwork(this.messageRepository, this.followingRepository, printStream);
-//		socialNetwork.execute("Bob follows Alice", SUBMISSION_TIME);
-//		assertThat(socialNetwork.isFollowing("Bob", "Alice")).isTrue();
-//	}
-//
-//	@Test
-//	public void aUserDoesNotFollowAnotherUserByDefault() throws Exception {
-//		assertThat(new SocialNetwork(this.messageRepository, this.followingRepository, System.out).isFollowing("Bob", "Alice")).isFalse();
-//	}
-
 	@Test
 	public void charliesWall_WhenFollowsAlice_IsMadeOfItsMessagesPlusAliceOnes() throws Exception {
 		this.postMessagesIn(this.socialNetwork);

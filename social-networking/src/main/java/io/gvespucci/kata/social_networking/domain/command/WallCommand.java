@@ -29,7 +29,7 @@ import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 import io.gvespucci.kata.social_networking.domain.message.Message;
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 
-class WallCommand extends SocialNetworkCommand {
+class WallCommand extends TextBasedCommand {
 
 	private static final String WALL_COMMAND_IDENTIFIER = " wall";
 
@@ -53,7 +53,7 @@ class WallCommand extends SocialNetworkCommand {
 	}
 
 	@Override
-	void innerExecute(String textCommand, LocalTime submissionTime) {
+	void handle(String textCommand, LocalTime submissionTime) {
 		final String[] splitCommand = textCommand.split(WALL_COMMAND_IDENTIFIER);
 		final String username = splitCommand[0];
 

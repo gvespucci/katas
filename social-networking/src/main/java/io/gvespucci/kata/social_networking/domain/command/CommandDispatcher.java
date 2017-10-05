@@ -27,7 +27,7 @@ import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 
 public class CommandDispatcher {
 
-	private final SocialNetworkCommand postCommand;
+	private final TextBasedCommand postCommand;
 
 	public CommandDispatcher(
 			MessageRepository messageRepository,
@@ -35,14 +35,14 @@ public class CommandDispatcher {
 			PrintStream printStream)
 	{
 		postCommand = new PostCommand(messageRepository);
-		final SocialNetworkCommand followCommand = new FollowCommand(followingRepository);
-		final SocialNetworkCommand wallCommand = new WallCommand(messageRepository, followingRepository, printStream);
-		final SocialNetworkCommand readCommand = new ReadCommand(messageRepository, printStream);
+		final TextBasedCommand followCommand = new FollowCommand(followingRepository);
+		final TextBasedCommand wallCommand = new WallCommand(messageRepository, followingRepository, printStream);
+		final TextBasedCommand readCommand = new ReadCommand(messageRepository, printStream);
 
 		postCommand.addNext(followCommand);
 		followCommand.addNext(wallCommand);
 		wallCommand.addNext(readCommand);
-		readCommand.addNext(SocialNetworkCommand.NULL);
+		readCommand.addNext(TextBasedCommand.NULL);
 	}
 
 	public void execute(String commandText, LocalTime submissionTime) {

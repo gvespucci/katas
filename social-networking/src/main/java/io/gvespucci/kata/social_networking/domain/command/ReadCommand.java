@@ -24,7 +24,7 @@ import java.time.LocalTime;
 
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 
-class ReadCommand extends SocialNetworkCommand {
+class ReadCommand extends TextBasedCommand {
 
 	private final MessageRepository messageRepository;
 	private final PrintStream printStream;
@@ -40,7 +40,7 @@ class ReadCommand extends SocialNetworkCommand {
 	}
 
 	@Override
-	void innerExecute(String username, LocalTime submissionTime) {
+	void handle(String username, LocalTime submissionTime) {
 		this.messageRepository.findBy(username)
 		.stream()
 		.forEach(message -> message.printTo(this.printStream, submissionTime));

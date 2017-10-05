@@ -24,7 +24,7 @@ import java.time.LocalTime;
 import io.gvespucci.kata.social_networking.domain.following.Following;
 import io.gvespucci.kata.social_networking.domain.following.FollowingRepository;
 
-class FollowCommand extends SocialNetworkCommand {
+class FollowCommand extends TextBasedCommand {
 
 	private static final String FOLLOW_COMMAND_IDENTIFIER = " follows ";
 
@@ -40,7 +40,7 @@ class FollowCommand extends SocialNetworkCommand {
 	}
 
 	@Override
-	void innerExecute(String textCommand, LocalTime submissionTime) {
+	void handle(String textCommand, LocalTime submissionTime) {
 		final String[] splitCommand = textCommand.split(FOLLOW_COMMAND_IDENTIFIER);
 		final String followerName = splitCommand[0];
 		final String followeeName = splitCommand[1];

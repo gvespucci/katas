@@ -24,7 +24,7 @@ import java.time.LocalTime;
 import io.gvespucci.kata.social_networking.domain.message.MessageRepository;
 import io.gvespucci.kata.social_networking.domain.message.TextMessage;
 
-class PostCommand extends SocialNetworkCommand {
+class PostCommand extends TextBasedCommand {
 
 	private static final String POST_COMMAND_IDENTIFIER = " -> ";
 
@@ -40,7 +40,7 @@ class PostCommand extends SocialNetworkCommand {
 	}
 
 	@Override
-	void innerExecute(String textCommand, LocalTime submissionTime) {
+	void handle(String textCommand, LocalTime submissionTime) {
 		final String[] splitCommand = textCommand.split(POST_COMMAND_IDENTIFIER);
 		final String username = splitCommand[0];
 		final String messageText = splitCommand[1];
