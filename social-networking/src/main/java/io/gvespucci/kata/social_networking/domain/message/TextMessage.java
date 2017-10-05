@@ -37,28 +37,27 @@ public class TextMessage implements Message {
 
 	@Override
 	public void printTo(PrintStream out, LocalTime referenceTime) {
-
-		final long secondsPassed = Duration.between(this.submissionTime, referenceTime).getSeconds();
+		final long elapsedSeconds = Duration.between(this.submissionTime, referenceTime).getSeconds();
 
 		out.println(String.format("> %s - %s (%d %s ago)",
 				this.username,
 				this.text,
-				this.elapsedTimeValue(secondsPassed),
-				this.elapsedTimeUnit(secondsPassed)));
+				this.elapsedTimeValue(elapsedSeconds),
+				this.elapsedTimeUnit(elapsedSeconds)));
 	}
 
-	private long elapsedTimeValue(final long secondsPassed) {
-		return secondsPassed < 60 ? secondsPassed : secondsPassed/60;
+	private long elapsedTimeValue(final long elapsedSeconds) {
+		return elapsedSeconds < 60 ? elapsedSeconds : elapsedSeconds/60;
 	}
 
-	private String elapsedTimeUnit(final long secondsPassed) {
-		if(secondsPassed == 1) {
+	private String elapsedTimeUnit(final long elapsedSeconds) {
+		if(elapsedSeconds == 1) {
 			return "second";
 		}
-		if(secondsPassed == 60) {
+		if(elapsedSeconds == 60) {
 			return "minute";
 		}
-		return secondsPassed > 60 ? "minutes" : "seconds";
+		return elapsedSeconds > 60 ? "minutes" : "seconds";
 	}
 
 	@Override
