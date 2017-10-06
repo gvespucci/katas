@@ -42,7 +42,7 @@ public class SocialNetworkAcceptanceTest {
 	private MessageRepository messageRepository;
 	private FollowingRepository followingRepository;
 	private FakePrintStream printStream;
-	private CommandDispatcher commandFactory;
+	private CommandDispatcher commandDispatcher;
 	private SocialNetwork socialNetwork;
 
 	@BeforeMethod
@@ -50,9 +50,9 @@ public class SocialNetworkAcceptanceTest {
 		this.messageRepository = new InMemoryMessageRepository();
 		this.followingRepository = new InMemoryFollowingRepository();
 		this.printStream = new FakePrintStream(System.out);
-		this.commandFactory = new CommandDispatcher(this.messageRepository, this.followingRepository, this.printStream);
+		this.commandDispatcher = new CommandDispatcher(this.messageRepository, this.followingRepository, this.printStream);
 
-		this.socialNetwork = new SocialNetwork(this.commandFactory);
+		this.socialNetwork = new SocialNetwork(this.commandDispatcher);
 	}
 
 	@Test
