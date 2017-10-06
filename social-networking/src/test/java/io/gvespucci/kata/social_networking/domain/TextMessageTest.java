@@ -49,10 +49,17 @@ public class TextMessageTest {
 	}
 
 	@Test
-	public void shouldPrintUsernameFollowedByDashandText() {
+	public void shouldPrintUsernameFollowedByDashAndText() {
 		final TextMessage message = new TextMessage("Bob", this.text, LocalTime.now());
 		message.printTo(this.printStream, LocalTime.now());
 		assertThat(this.printStream.printedMessages().stream().findFirst().get()).startsWith("Bob - "+this.text);
+	}
+
+	@Test
+	public void shouldPrintOneElapsedSecondAfterTheText() {
+		final TextMessage message = new TextMessage("Alice", this.text, this.submittedOn);
+		message.printTo(this.printStream, this.submittedOn.plusSeconds(1));
+		assertThat(this.printStream.printedMessages().stream().findFirst().get()).endsWith(" (1 second ago)");
 	}
 
 	@Test
@@ -70,7 +77,7 @@ public class TextMessageTest {
 	}
 
 	@Test
-	public void shouldPrintOneSingleMinuteAfterTheText() {
+	public void shouldPrintOneSingleElapsedMinuteAfterTheText() {
 		final TextMessage message = new TextMessage("Magda", this.text, this.submittedOn);
 		message.printTo(this.printStream, this.submittedOn.plusSeconds(60));
 		assertThat(this.printStream.printedMessages().stream().findFirst().get()).endsWith(" (1 minute ago)");
