@@ -12,7 +12,7 @@ public class Priorities {
         for (final String event : events) {
             if ("ENTER".equals(event.split(" ")[0])) {
                 this.queue.add(Student.of(event));
-                System.out.println(this.queue);
+                System.out.println("ENTER: " + this.queue);
             }
         }
         return new ArrayList<>(this.queue);
