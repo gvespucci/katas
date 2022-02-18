@@ -6,18 +6,20 @@ import org.junit.jupiter.api.Test;
 
 class StudentTest {
 
+    public static final String EVENT = "ENTER John 3.75 50";
+
     @Test
     void shouldParseTheName() {
-        assertEquals("John", Student.of("John 3.75 50").getName());
+        assertEquals("John", Student.of(EVENT).getName());
     }
 
     @Test
     void shouldParseTheCumulativeGradePointAverage() {
-        assertEquals(3.75, Student.of("John 3.75 50").getCGPA());
+        assertEquals(3.75, Student.of(EVENT).getCGPA());
     }
 
     @Test
     void shouldParseTheId() {
-        assertEquals(50, Student.of("John 3.75 50").getID());
+        assertEquals(50, Student.of(EVENT).getID());
     }
 }
