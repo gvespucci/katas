@@ -1,6 +1,6 @@
 package io.gvespucci.hackerrank.javapriorityqueue;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -12,8 +12,9 @@ public class Priorities {
         for (final String event : events) {
             if ("ENTER".equals(event.split(" ")[0])) {
                 this.queue.add(Student.of(event));
+                System.out.println(this.queue);
             }
         }
-        return Collections.emptyList();
+        return new ArrayList<>(this.queue);
     }
 }
