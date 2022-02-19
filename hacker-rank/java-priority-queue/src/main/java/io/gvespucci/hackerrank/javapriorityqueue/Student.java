@@ -2,7 +2,9 @@ package io.gvespucci.hackerrank.javapriorityqueue;
 
 import java.util.Objects;
 
-public class Student implements Comparable<Student> {
+public class Student {
+
+    private static final StudentComparator STUDENT_COMPARATOR = new StudentComparator();
 
     private final String name;
     private final double cgpa;
@@ -17,26 +19,6 @@ public class Student implements Comparable<Student> {
     static Student of(final String event) {
         final String[] items = event.split(" ");
         return new Student(items[1], Double.parseDouble(items[2]), Integer.parseInt(items[3]));
-    }
-
-    @Override
-    public int compareTo(final Student that) {
-        if (this.cgpa > that.cgpa) {
-            return 1;
-        }
-        if (this.cgpa == that.cgpa) {
-            if (this.name.equals(that.name)) {
-                return Integer.compare(that.id, this.id);
-            } else {
-                return that.name.compareTo(this.name);
-            }
-        }
-        return 0;
-    }
-
-    boolean isServedBefore(final Student that) {
-        return new StudentComparator().compare(this, that) > 0;
-//        return this.compareTo(that) > 0;
     }
 
     public String getName() {
@@ -81,4 +63,8 @@ public class Student implements Comparable<Student> {
     public String toString() {
         return "Student(name=" + this.getName() + ", cgpa=" + this.getCgpa() + ", id=" + this.getId() + ")";
     }
+
+//    boolean isServedBefore(final Student that) {
+//        return STUDENT_COMPARATOR.compare(this, that) > 0;
+//    }
 }
