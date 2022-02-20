@@ -15,12 +15,12 @@ public class Priorities {
             final String[] eventItems = event.split(" ");
             final String command = eventItems[0];
             if (command.equals("ENTER")) {
+                System.out.println("(+) " + event);
                 this.queue.add(Student.of(event));
-                System.out.println("ENTER : " + Arrays.toString(this.queue.toArray()));
             } else if (command.equals("SERVED")) {
-                System.out.println("REMOVING : " + this.queue.remove());
-                System.out.println("SERVED : " + Arrays.toString(this.queue.toArray()));
+                System.out.println("(-) SERVING: " + this.queue.remove());
             }
+            System.out.println("QUEUE: " + Arrays.toString(this.queue.toArray()));
         }
         return new ArrayList<>(this.queue);
     }

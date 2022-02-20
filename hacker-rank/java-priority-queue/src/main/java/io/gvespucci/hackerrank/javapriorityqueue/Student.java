@@ -4,8 +4,6 @@ import java.util.Objects;
 
 public class Student {
 
-    private static final StudentComparator STUDENT_COMPARATOR = new StudentComparator();
-
     private final String name;
     private final double cgpa;
     private final int id;
@@ -61,10 +59,6 @@ public class Student {
     }
 
     public String toString() {
-        return "Student(name=" + this.getName() + ", cgpa=" + this.getCgpa() + ", id=" + this.getId() + ")";
+        return "(" + this.getName() + ", " + this.getCgpa() + ", " + this.getId() + ")";
     }
-
-//    boolean isServedBefore(final Student that) {
-//        return STUDENT_COMPARATOR.compare(this, that) > 0;
-//    }
 }

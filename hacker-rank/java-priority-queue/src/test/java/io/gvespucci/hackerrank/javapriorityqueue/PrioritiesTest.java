@@ -23,9 +23,10 @@ class PrioritiesTest {
         "SERVED",
         "ENTER Ashley 3.9 42",
         "ENTER Maria 3.6 46",
-        "ENTER Anik 3.95 49",
-        "ENTER Dan 3.95 50",
-        "SERVED"
+        "ENTER Anik 3.95 49"
+//        ,
+//        "ENTER Dan 3.95 50",
+//        "SERVED"
     );
 
     @Test
@@ -41,9 +42,9 @@ class PrioritiesTest {
     @Test
     void shouldRemainFourExactToServe() {
         final List<Student> stillToServe = new Priorities().getStudents(WHOLE_SEQUENCE);
-        assertEquals("Dan", stillToServe.get(0).getName());
-        assertEquals("Ashley", stillToServe.get(1).getName());
-        assertEquals("Shafaet", stillToServe.get(2).getName());
-        assertEquals("Maria", stillToServe.get(3).getName());
+        assertEquals("Dan", stillToServe.get(0).getName(), "1st student");
+        assertEquals("Ashley", stillToServe.get(1).getName(), "2nd student");
+        assertEquals("Shafaet", stillToServe.get(2).getName(), "3rd student");
+        assertEquals("Maria", stillToServe.get(3).getName(), "4th student");
     }
 }

@@ -12,7 +12,9 @@ public class StudentComparator implements Comparator<Student> {
 
     @Override
     public int compare(final Student o1, final Student o2) {
+        System.out.printf("Comparing %s with %s%n", o1, o2);
         if (o1.getCgpa() > o2.getCgpa()) {
+            System.out.printf("%s goes first, %s goes after%n", o1, o2);
             return -1;
         }
         if (o1.getCgpa() == o2.getCgpa()) {
